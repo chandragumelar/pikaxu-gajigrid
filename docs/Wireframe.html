@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gajigrid — Wireframe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0b10; }
+    :root {
+      --bg:#080a0f; --bg1:#0d1019; --bg2:#131724; --bg3:#1a1f2e;
+      --bd:#1c2235; --bds:#141826; --bda:rgba(0,212,168,0.28);
+      --ac:#00d4a8; --acd:rgba(0,212,168,0.10); --acg:rgba(0,212,168,0.18);
+      --ab:#7c5cfc; --abd:rgba(124,92,252,0.10);
+      --t1:#eef1f8; --t2:#8892a8; --t3:#4a5368;
+      --dn:#ef4444; --dnb:rgba(239,68,68,0.08);
+      --sc:#22c55e; --scb:rgba(34,197,94,0.08);
+      --wn:#f59e0b; --wnb:rgba(245,158,11,0.08);
+      --fd:'Space Grotesk',sans-serif; --fb:'DM Sans',sans-serif; --fm:'JetBrains Mono',monospace;
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script src="design-canvas.jsx" type="text/babel"></script>
+<script type="text/babel">
+
+/* ─── Token object ─────────────────────────────────────── */
+const C = {
+  bg:'#080a0f', bg1:'#0d1019', bg2:'#131724', bg3:'#1a1f2e',
+  bd:'#1c2235', bds:'#141826', bda:'rgba(0,212,168,0.28)',
+  ac:'#00d4a8', acd:'rgba(0,212,168,0.10)',
+  ab:'#7c5cfc', abd:'rgba(124,92,252,0.10)',
+  t1:'#eef1f8', t2:'#8892a8', t3:'#4a5368',
+  dn:'#ef4444', dnb:'rgba(239,68,68,0.08)',
+  sc:'#22c55e', scb:'rgba(34,197,94,0.08)',
+  wn:'#f59e0b', wnb:'rgba(245,158,11,0.08)',
+};
+const fd = "'Space Grotesk',sans-serif";
+const fb = "'DM Sans',sans-serif";
+const fm = "'JetBrains Mono',monospace";
+
+/* ─── Micro-components ──────────────────────────────────── */
+
+const Scrn = ({children}) => (
+  <div style={{background:C.bg, fontFamily:fb, color:C.t1, overflow:'hidden'}}>
+    {children}
+  </div>
+);
+
+const Nav = ({method}) => (
+  <div style={{height:64, borderBottom:`1px solid ${C.bd}`, display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0 40px', background:C.bg, flexShrink:0}}>
+    <div style={{display:'flex', alignItems:'center', gap:2, fontFamily:fd, fontSize:20, fontWeight:600, letterSpacing:'-0.01em'}}>
+      <span style={{color:C.t1}}>gaji</span>
+      <span style={{color:C.ac}}>grid</span>
+      <span style={{width:6, height:6, borderRadius:'50%', background:C.ac, marginLeft:3, marginBottom:2, display:'inline-block'}} />
+    </div>
+    <div style={{display:'flex', alignItems:'center', gap:4}}>
+      {['Cara Kerja','FAQ'].map(l => (
+        <button key={l} style={{background:'transparent', border:'none', color:C.t2, fontSize:14, fontFamily:fb, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>{l}</button>
+      ))}
+      {method && <>
+        <div style={{width:1, height:20, background:C.bd, margin:'0 8px'}} />
+        <span style={{fontSize:12, color:C.t3, padding:'4px 10px', border:`1px solid ${C.bd}`, borderRadius:6, fontFamily:fb, fontWeight:500}}>Metode {method}</span>
+      </>}
+    </div>
+  </div>
+);
+
+const Stepper = ({steps, active, variant='a'}) => {
+  const ac = variant === 'b' ? C.ab : C.ac;
+  const acd = variant === 'b' ? C.abd : C.acd;
+  return (
+    <div style={{height:68, borderBottom:`1px solid ${C.bd}`, display:'flex', alignItems:'center', justifyContent:'center', background:C.bg, gap:0}}>
+      {steps.map((s,i) => {
+        const done = i < active, cur = i === active;
+        return [
+          i > 0 && <div key={`l${i}`} style={{width:56, height:1, background:done?ac:C.bd, flexShrink:0}} />,
+          <div key={`s${i}`} style={{display:'flex', flexDirection:'column', alignItems:'center', gap:4}}>
+            <div style={{
+              width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center',
+              fontSize:12, fontWeight:600, fontFamily:fd,
+              background:done?ac:cur?acd:'transparent',
+              border:done?'none':`2px solid ${cur?ac:C.bd}`,
+              color:done?'#080a0f':cur?ac:C.t3
+            }}>{done?'✓':i+1}</div>
+            <span style={{fontSize:11, fontWeight:500, fontFamily:fb, color:cur||done?C.t1:C.t3, whiteSpace:'nowrap'}}>{s}</span>
+          </div>
+        ];
+      })}
+    </div>
+  );
+};
+
+const Badge = ({children, v='accent'}) => {
+  const map = {
+    accent:{bg:C.acd, cl:C.ac, bd:'rgba(0,212,168,0.2)'},
+    violet:{bg:C.abd, cl:C.ab, bd:'rgba(124,92,252,0.2)'},
+    success:{bg:C.scb, cl:C.sc, bd:'rgba(34,197,94,0.2)'},
+    warning:{bg:C.wnb, cl:C.wn, bd:'rgba(245,158,11,0.2)'},
+    danger:{bg:C.dnb, cl:C.dn, bd:'rgba(239,68,68,0.2)'},
+    neutral:{bg:C.bg3, cl:C.t2, bd:C.bd},
+  };
+  const x = map[v] || map.accent;
+  return (
+    <span style={{display:'inline-flex', alignItems:'center', gap:4, padding:'3px 8px', borderRadius:6, fontSize:11, fontWeight:500, letterSpacing:'0.04em', textTransform:'uppercase', background:x.bg, color:x.cl, border:`1px solid ${x.bd}`, fontFamily:fb}}>
+      {children}
+    </span>
+  );
+};
+
+const Btn = ({children, variant='ghost', full, size='md', icon}) => {
+  const sz = {sm:{padding:'6px 12px',fontSize:13}, md:{padding:'10px 18px',fontSize:14}, lg:{padding:'13px 24px',fontSize:15}}[size];
+  const vs = {
+    primary:{background:C.ac, color:'#08090f', border:'none'},
+    ghost:{background:'transparent', color:C.t1, border:`1px solid ${C.bd}`},
+    'outline-accent':{background:C.acd, color:C.ac, border:'1px solid rgba(0,212,168,0.25)'},
+    'outline-violet':{background:C.abd, color:C.ab, border:'1px solid rgba(124,92,252,0.25)'},
+    danger:{background:'transparent', color:C.dn, border:'1px solid rgba(239,68,68,0.3)'},
+  };
+  return (
+    <button style={{display:'inline-flex', alignItems:'center', gap:6, fontFamily:fb, fontWeight:500, cursor:'pointer', borderRadius:10, ...sz, ...(vs[variant]||vs.ghost), ...(full?{width:'100%', justifyContent:'center'}:{})}}>
+      {icon && <span>{icon}</span>}{children}
+    </button>
+  );
+};
+
+const IBox = ({children, title, v='a'}) => {
+  const ac = v==='b' ? C.ab : C.ac;
+  return (
+    <div style={{background:C.bg2, border:`1px solid ${C.bd}`, borderLeft:`3px solid ${ac}`, borderRadius:10, padding:'12px 16px', marginTop:12}}>
+      {title && <div style={{fontSize:11, fontWeight:500, color:ac, fontFamily:fb, textTransform:'uppercase', letterSpacing:'0.04em', marginBottom:6}}>ⓘ {title}</div>}
+      <div style={{fontSize:13, lineHeight:1.65, color:C.t2, fontFamily:fb}}>{children}</div>
+    </div>
+  );
+};
+
+const Inp = ({label, placeholder, value, helper, mono, prefix}) => (
+  <div style={{display:'flex', flexDirection:'column', gap:6}}>
+    {label && <label style={{fontSize:12, fontWeight:500, color:C.t2, fontFamily:fb}}>{label}</label>}
+    <div style={{position:'relative'}}>
+      {prefix && <span style={{position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', fontSize:13, color:C.t3, fontFamily:fb, pointerEvents:'none'}}>{prefix}</span>}
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:10, padding:`10px ${prefix?'14px 10px 40px':'14px'}`, fontSize:14, color:value?C.t1:C.t3, fontFamily:mono?fm:fb, textAlign:mono&&!prefix?'right':'left', lineHeight:1.4}}>
+        {value || placeholder}
+      </div>
+    </div>
+    {helper && <span style={{fontSize:12, color:C.t3, fontFamily:fb}}>{helper}</span>}
+  </div>
+);
+
+const TH = ({cols}) => (
+  <thead>
+    <tr style={{background:C.bg2, borderBottom:`1px solid ${C.bd}`}}>
+      {cols.map((c,i) => (
+        <th key={i} style={{padding:'10px 14px', fontSize:11, fontWeight:500, color:C.t3, letterSpacing:'0.06em', textTransform:'uppercase', fontFamily:fb, textAlign:c.r?'right':'left', whiteSpace:'nowrap'}}>
+          {c.l}
+        </th>
+      ))}
+    </tr>
+  </thead>
+);
+
+const TR = ({cells, status, last}) => {
+  const sbg = {danger:C.dnb, success:C.scb, warning:C.wnb}[status] || 'transparent';
+  const sclr = {danger:C.dn, success:C.sc, warning:C.wn}[status];
+  return (
+    <tr style={{borderBottom:last?'none':`1px solid ${C.bds}`, background:sbg}}>
+      {cells.map((cell,j) => (
+        <td key={j} style={{
+          padding:'11px 14px', fontSize:13,
+          fontFamily:cell.m?fm:fb, fontWeight:cell.m?500:400,
+          color:cell.dim?C.t3:C.t1, textAlign:cell.r?'right':'left',
+          whiteSpace:'nowrap',
+          borderLeft:j===0&&sclr?`3px solid ${sclr}`:'none',
+        }}>{cell.v}</td>
+      ))}
+    </tr>
+  );
+};
+
+const DTable = ({cols, rows}) => (
+  <div style={{border:`1px solid ${C.bd}`, borderRadius:14, overflow:'hidden'}}>
+    <table style={{width:'100%', borderCollapse:'collapse'}}>
+      <TH cols={cols} />
+      <tbody>{rows.map((r,i) => <TR key={i} {...r} last={i===rows.length-1} />)}</tbody>
+    </table>
+  </div>
+);
+
+const PrivacyRow = () => (
+  <div style={{display:'flex', alignItems:'center', gap:6, marginTop:16, fontSize:12, color:C.t3, fontFamily:fb}}>
+    <span style={{color:C.ac, fontSize:13}}>🔒</span>
+    Semua kalkulasi berjalan di browser kamu. Tidak ada data yang dikirim ke server.
+  </div>
+);
+
+const STitle = ({badge, title, sub, bv}) => (
+  <div style={{marginBottom:28}}>
+    {badge && <div style={{marginBottom:10}}><Badge v={bv||'accent'}>{badge}</Badge></div>}
+    <h2 style={{fontFamily:fd, fontSize:28, fontWeight:700, color:C.t1, letterSpacing:'-0.025em', lineHeight:1.2}}>{title}</h2>
+    {sub && <p style={{fontSize:15, color:C.t2, marginTop:8, lineHeight:1.65}}>{sub}</p>}
+  </div>
+);
+
+const OutHeader = ({title, method}) => (
+  <div style={{borderBottom:`1px solid ${C.bd}`, padding:'14px 40px', background:C.bg, display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+    <div style={{display:'flex', alignItems:'center', gap:10}}>
+      <h2 style={{fontFamily:fd, fontSize:17, fontWeight:600, color:C.t1}}>{title}</h2>
+      <Badge v={method==='B'?'violet':'accent'}>{method==='B'?'Metode B':'Metode A'}</Badge>
+    </div>
+    <div style={{display:'flex', gap:8}}>
+      <Btn size="sm" variant="ghost" icon="✏️">Edit Konfigurasi</Btn>
+      <Btn size="sm" variant="primary" icon="↓">Download Excel</Btn>
+    </div>
+  </div>
+);
+
+const SubH = ({children, mt=28}) => (
+  <h3 style={{fontFamily:fd, fontSize:15, fontWeight:600, color:C.t1, marginBottom:12, marginTop:mt}}>{children}</h3>
+);
+
+const Legend = () => (
+  <div style={{display:'flex', gap:20, marginTop:12}}>
+    {[{c:C.dn,l:'Di bawah minimum'},{c:C.sc,l:'Dalam rentang'},{c:C.wn,l:'Di atas maksimum'}].map(x=>(
+      <div key={x.l} style={{display:'flex', alignItems:'center', gap:6, fontSize:12, color:C.t2, fontFamily:fb}}>
+        <div style={{width:10, height:10, borderRadius:3, background:x.c}} />{x.l}
+      </div>
+    ))}
+  </div>
+);
+
+const Divider = () => <div style={{height:1, background:C.bds, margin:'28px 0'}} />;
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 1 — LANDING
+───────────────────────────────────────────────────────── */
+const Landing = () => (
+  <Scrn>
+    <Nav />
+    <div style={{textAlign:'center', padding:'68px 40px 44px', maxWidth:960, margin:'0 auto'}}>
+      <div style={{marginBottom:18}}><Badge>Gratis · Kalkulasi di Browser</Badge></div>
+      <h1 style={{fontFamily:fd, fontSize:52, fontWeight:700, color:C.t1, letterSpacing:'-0.03em', lineHeight:1.1, marginBottom:18}}>
+        Susun Struktur Gaji<br/>
+        yang <span style={{color:C.ac}}>Adil & Terukur</span>
+      </h1>
+      <p style={{fontSize:17, color:C.t2, maxWidth:520, margin:'0 auto', lineHeight:1.65}}>
+        Dua metode berbasis data untuk menyusun skala upah yang transparan dan fair — semua kalkulasi di browser.
+      </p>
+    </div>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:24, maxWidth:960, margin:'0 auto', padding:'0 40px 44px'}}>
+      {/* Card A */}
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:20, padding:32, display:'flex', flexDirection:'column', gap:0}}>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:18}}>
+          <Badge v="accent">Metode A</Badge>
+          <div style={{width:36, height:36, borderRadius:10, background:C.acd, border:`1px solid rgba(0,212,168,0.2)`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:16}}>📊</div>
+        </div>
+        <h2 style={{fontFamily:fd, fontSize:19, fontWeight:600, color:C.t1, marginBottom:10}}>Dari Data Gaji yang Sudah Ada</h2>
+        <p style={{fontSize:14, color:C.t2, lineHeight:1.65, marginBottom:18}}>
+          Cocok kalau kamu sudah punya data gaji karyawan dan ingin menyusun ulang struktur golongan berdasarkan data tersebut.
+        </p>
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:11, fontWeight:500, color:C.t3, textTransform:'uppercase', letterSpacing:'0.05em', fontFamily:fb, marginBottom:8}}>Cocok untuk</div>
+          {['Perusahaan dengan data gaji existing yang ingin dirapi ulang','Tidak perlu penilaian bobot jabatan terlebih dahulu'].map(t=>(
+            <div key={t} style={{display:'flex', alignItems:'flex-start', gap:8, marginBottom:7}}>
+              <span style={{color:C.ac, fontSize:13, marginTop:1, flexShrink:0}}>✓</span>
+              <span style={{fontSize:13, color:C.t2, lineHeight:1.5}}>{t}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:'auto'}}><Btn variant="primary" full>Mulai dengan Metode A →</Btn></div>
+      </div>
+      {/* Card B */}
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:20, padding:32, display:'flex', flexDirection:'column', gap:0}}>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:18}}>
+          <Badge v="violet">Metode B</Badge>
+          <div style={{width:36, height:36, borderRadius:10, background:C.abd, border:'1px solid rgba(124,92,252,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16}}>⚖️</div>
+        </div>
+        <h2 style={{fontFamily:fd, fontSize:19, fontWeight:600, color:C.t1, marginBottom:10}}>Dari Bobot / Poin Jabatan</h2>
+        <p style={{fontSize:14, color:C.t2, lineHeight:1.65, marginBottom:18}}>
+          Cocok kalau kamu ingin menyusun gaji berdasarkan seberapa besar tanggung jawab dan keahlian tiap jabatan.
+        </p>
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:11, fontWeight:500, color:C.t3, textTransform:'uppercase', letterSpacing:'0.05em', fontFamily:fb, marginBottom:8}}>Cocok untuk</div>
+          {['Struktur gaji berbasis bobot jabatan yang lebih adil','Membangun struktur gaji dari nol atau restrukturisasi penuh'].map(t=>(
+            <div key={t} style={{display:'flex', alignItems:'flex-start', gap:8, marginBottom:7}}>
+              <span style={{color:C.ab, fontSize:13, marginTop:1, flexShrink:0}}>✓</span>
+              <span style={{fontSize:13, color:C.t2, lineHeight:1.5}}>{t}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:'auto'}}><Btn variant="outline-violet" full>Mulai dengan Metode B →</Btn></div>
+      </div>
+    </div>
+    <div style={{textAlign:'center', paddingBottom:40}}>
+      <div style={{display:'inline-flex', alignItems:'center', gap:6, fontSize:12, color:C.t3, fontFamily:fb}}>
+        <span style={{color:C.ac}}>🔒</span> Semua kalkulasi berjalan di browser. Tidak ada data yang dikirim ke server.
+      </div>
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 2 — METODE A: INPUT DATA
+───────────────────────────────────────────────────────── */
+const AInput = () => (
+  <Scrn>
+    <Nav method="A" />
+    <Stepper steps={['Input Data','Konfigurasi','Hasil']} active={0} />
+    <div style={{maxWidth:760, margin:'0 auto', padding:'40px 24px 72px'}}>
+      <STitle title="Input Data Karyawan" sub="Masukkan data karyawan yang akan dihitung struktur gajinya." />
+      <div style={{display:'inline-flex', background:C.bg2, border:`1px solid ${C.bd}`, borderRadius:10, padding:3, gap:2, marginBottom:24}}>
+        {['Input Manual','Upload Excel'].map((t,i) => (
+          <div key={t} style={{padding:'7px 16px', borderRadius:8, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:fb, background:i===0?C.bg1:'transparent', border:i===0?`1px solid ${C.bda}`:'1px solid transparent', color:i===0?C.ac:C.t3}}>{t}</div>
+        ))}
+      </div>
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:14, overflow:'hidden', marginBottom:6}}>
+        <table style={{width:'100%', borderCollapse:'collapse'}}>
+          <TH cols={[{l:'No'},{l:'Nama'},{l:'Jabatan'},{l:'Gaji',r:true},{l:''}]} />
+          <tbody>
+            {[['1','Andi Pratama','Staff Admin','Rp 4.500.000'],['2','Budi Santoso','Senior Staff','Rp 6.200.000'],['3','Citra Lestari','Supervisor','Rp 8.750.000'],['4','Dewi Rahayu','Manager','Rp 12.500.000']].map(([n,nm,j,g],i,arr) => (
+              <tr key={i} style={{borderBottom:i<arr.length-1?`1px solid ${C.bds}`:'none'}}>
+                <td style={{padding:'11px 14px', fontSize:13, color:C.t3, fontFamily:fb, width:44}}>{n}</td>
+                <td style={{padding:'11px 14px', fontSize:14, color:C.t1, fontFamily:fb}}>{nm}</td>
+                <td style={{padding:'11px 14px', fontSize:14, color:C.t1, fontFamily:fb}}>{j}</td>
+                <td style={{padding:'11px 14px', fontSize:13, color:C.t1, fontFamily:fm, fontWeight:500, textAlign:'right'}}>{g}</td>
+                <td style={{padding:'11px 14px', textAlign:'right', width:36}}>
+                  <button style={{background:'transparent', border:'none', color:C.t3, cursor:'pointer', fontSize:13}}>✕</button>
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <td colSpan={5} style={{padding:'10px 14px'}}>
+                <button style={{background:'transparent', border:'none', color:C.ac, fontSize:13, fontFamily:fb, cursor:'pointer', display:'flex', alignItems:'center', gap:4}}>+ Tambah Baris</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <PrivacyRow />
+      <div style={{display:'flex', justifyContent:'flex-end', marginTop:28}}>
+        <Btn variant="primary" icon="→">Lanjut</Btn>
+      </div>
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 3 — METODE A: KONFIGURASI
+───────────────────────────────────────────────────────── */
+const AConfig = () => (
+  <Scrn>
+    <Nav method="A" />
+    <Stepper steps={['Input Data','Konfigurasi','Hasil']} active={1} />
+    <div style={{maxWidth:760, margin:'0 auto', padding:'40px 24px 72px'}}>
+      <STitle title="Tentukan Golongan & Rentang" sub="Atur jumlah golongan jabatan dan lebar rentang gaji setiap golongan." />
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:14, padding:24, marginBottom:20}}>
+        <div style={{display:'flex', alignItems:'flex-start', gap:24}}>
+          <div style={{flex:'0 0 180px'}}>
+            <Inp label="Jumlah Golongan" value="4" helper="Saran: 4 (berdasarkan jabatan unik)" />
+          </div>
+          <div style={{flex:1, paddingTop:24}}>
+            <IBox title="Apa itu golongan?">
+              Golongan adalah pengelompokan level jabatan. Contoh: Staff, Senior, Supervisor, Manager = 4 golongan. Biasanya 1 golongan setara 1 level karir.
+            </IBox>
+          </div>
+        </div>
+      </div>
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:14, overflow:'hidden', marginBottom:14}}>
+        <div style={{padding:'13px 20px', borderBottom:`1px solid ${C.bds}`, fontSize:14, fontWeight:600, fontFamily:fd, color:C.t1}}>Rentang per Golongan</div>
+        <table style={{width:'100%', borderCollapse:'collapse'}}>
+          <TH cols={[{l:'Golongan'},{l:'Rentang'},{l:'Min (preview)',r:true},{l:'Mid (preview)',r:true},{l:'Maks (preview)',r:true}]} />
+          <tbody>
+            {[
+              ['Golongan 1','20%','Rp 3.750.000','Rp 4.500.000','Rp 5.250.000'],
+              ['Golongan 2','20%','Rp 6.667.000','Rp 8.000.000','Rp 9.333.000'],
+              ['Golongan 3','25%','Rp 10.182.000','Rp 12.727.000','Rp 15.273.000'],
+              ['Golongan 4','30%','Rp 19.231.000','Rp 25.000.000','Rp 30.769.000'],
+            ].map(([gl,rg,...preview],i,arr) => (
+              <tr key={i} style={{borderBottom:i<arr.length-1?`1px solid ${C.bds}`:'none'}}>
+                <td style={{padding:'11px 14px', fontSize:14, color:C.t1, fontFamily:fb}}>{gl}</td>
+                <td style={{padding:'8px 14px'}}>
+                  <div style={{background:C.bg2, border:`1px solid ${C.bd}`, borderRadius:6, padding:'5px 10px', fontSize:13, fontWeight:500, fontFamily:fm, color:C.t1, width:70, textAlign:'right', display:'inline-block'}}>{rg}</div>
+                </td>
+                {preview.map((pv,k) => (
+                  <td key={k} style={{padding:'11px 14px', fontSize:13, fontFamily:fm, fontWeight:500, color:C.t2, textAlign:'right'}}>{pv}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <IBox title="Panduan Rentang">
+        Rentang 20%–30% umum dipakai. Golongan senior biasanya lebih lebar karena variasi tanggung jawab lebih besar. Contoh: midpoint Golongan 1 = Rp 4.500.000, rentang 20% → Min ≈ Rp 3.750.000, Maks ≈ Rp 5.250.000.
+      </IBox>
+      <div style={{display:'flex', justifyContent:'space-between', marginTop:28}}>
+        <Btn variant="ghost" icon="←">Kembali</Btn>
+        <Btn variant="primary" icon="✦">Buat Struktur Gaji</Btn>
+      </div>
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 4 — METODE A: HASIL
+───────────────────────────────────────────────────────── */
+const AResult = () => (
+  <Scrn>
+    <Nav method="A" />
+    <OutHeader title="Hasil Struktur Gaji" method="A" />
+    <div style={{maxWidth:1200, margin:'0 auto', padding:'28px 40px 72px'}}>
+      <SubH mt={0}>Struktur Golongan Baru</SubH>
+      <DTable
+        cols={[{l:'Golongan'},{l:'Rentang'},{l:'Min',r:true},{l:'Mid',r:true},{l:'Maks',r:true}]}
+        rows={[
+          {cells:[{v:'Golongan 1'},{v:'20%'},{v:'Rp 3.750.000',m:true,r:true},{v:'Rp 4.500.000',m:true,r:true},{v:'Rp 5.250.000',m:true,r:true}]},
+          {cells:[{v:'Golongan 2'},{v:'20%'},{v:'Rp 6.667.000',m:true,r:true},{v:'Rp 8.000.000',m:true,r:true},{v:'Rp 9.333.000',m:true,r:true}]},
+          {cells:[{v:'Golongan 3'},{v:'25%'},{v:'Rp 10.182.000',m:true,r:true},{v:'Rp 12.727.000',m:true,r:true},{v:'Rp 15.273.000',m:true,r:true}]},
+          {cells:[{v:'Golongan 4'},{v:'30%'},{v:'Rp 19.231.000',m:true,r:true},{v:'Rp 25.000.000',m:true,r:true},{v:'Rp 30.769.000',m:true,r:true}]},
+        ]}
+      />
+      <Divider />
+      <SubH mt={0}>Detail per Karyawan</SubH>
+      <DTable
+        cols={[{l:'Nama'},{l:'Jabatan'},{l:'Gol.'},{l:'Gaji Lama',r:true},{l:'Min',r:true},{l:'Maks',r:true},{l:'Gap vs Min',r:true},{l:'Gap vs Maks',r:true}]}
+        rows={[
+          {status:'danger',  cells:[{v:'Andi Pratama'},{v:'Staff Admin'},{v:'1'},{v:'Rp 3.600.000',m:true,r:true},{v:'Rp 3.750.000',m:true,r:true},{v:'Rp 5.250.000',m:true,r:true},{v:'−Rp 150.000',m:true,r:true},{v:'+Rp 1.650.000',m:true,r:true}]},
+          {status:'success', cells:[{v:'Budi Santoso'},{v:'Senior Staff'},{v:'2'},{v:'Rp 7.200.000',m:true,r:true},{v:'Rp 6.667.000',m:true,r:true},{v:'Rp 9.333.000',m:true,r:true},{v:'+Rp 533.000',m:true,r:true},{v:'−Rp 2.133.000',m:true,r:true}]},
+          {status:'success', cells:[{v:'Citra Lestari'},{v:'Supervisor'},{v:'3'},{v:'Rp 8.750.000',m:true,r:true},{v:'Rp 10.182.000',m:true,r:true},{v:'Rp 15.273.000',m:true,r:true},{v:'−Rp 1.432.000',m:true,r:true},{v:'−Rp 6.523.000',m:true,r:true}]},
+          {status:'warning', cells:[{v:'Dewi Rahayu'},{v:'Manager'},{v:'4'},{v:'Rp 32.000.000',m:true,r:true},{v:'Rp 19.231.000',m:true,r:true},{v:'Rp 30.769.000',m:true,r:true},{v:'+Rp 12.769.000',m:true,r:true},{v:'+Rp 1.231.000',m:true,r:true}]},
+        ]}
+      />
+      <Legend />
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 5 — METODE B: BRANCH
+───────────────────────────────────────────────────────── */
+const BBranch = () => (
+  <Scrn>
+    <Nav method="B" />
+    <div style={{maxWidth:640, margin:'0 auto', padding:'72px 24px 72px', textAlign:'center'}}>
+      <div style={{marginBottom:16}}><Badge v="violet">Metode B</Badge></div>
+      <h1 style={{fontFamily:fd, fontSize:34, fontWeight:700, color:C.t1, letterSpacing:'-0.02em', lineHeight:1.2, marginBottom:16}}>
+        Sudah punya poin jabatan?
+      </h1>
+      <p style={{fontSize:15, color:C.t2, lineHeight:1.65, marginBottom:36, maxWidth:500, margin:'0 auto 36px'}}>
+        Poin jabatan adalah angka yang menggambarkan "bobot" suatu jabatan — berdasarkan tanggung jawab, keahlian, dan faktor lain. Kalau belum punya, tool ini akan membantu menghitungnya.
+      </p>
+      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
+        {[
+          {icon:'📋', title:'Ya, Sudah Punya', desc:'Saya sudah punya data poin per jabatan, tinggal input langsung.', btn:'Lanjut →', v:'outline-violet'},
+          {icon:'🧮', title:'Belum, Bantu Saya', desc:'Belum ada data poin — bantu saya menghitung lewat penilaian faktor.', btn:'Mulai dari Faktor →', v:'outline-violet'},
+        ].map(x => (
+          <div key={x.title} style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:16, padding:24, textAlign:'left', cursor:'pointer'}}>
+            <div style={{fontSize:28, marginBottom:12}}>{x.icon}</div>
+            <div style={{fontFamily:fd, fontSize:16, fontWeight:600, color:C.t1, marginBottom:8}}>{x.title}</div>
+            <div style={{fontSize:13, color:C.t2, lineHeight:1.55, marginBottom:20}}>{x.desc}</div>
+            <Btn variant={x.v} full>{x.btn}</Btn>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 6 — METODE B: POIN FAKTOR BUILDER
+───────────────────────────────────────────────────────── */
+const BPoinFaktor = () => (
+  <Scrn>
+    <Nav method="B" />
+    <Stepper steps={['Setup Faktor','Isi Poin','Konfigurasi','Hasil']} active={0} variant="b" />
+    <div style={{maxWidth:860, margin:'0 auto', padding:'40px 24px 72px'}}>
+      <STitle badge="Belum Punya Poin" bv="violet" title="Setup Faktor & Isi Poin Jabatan" sub="Tentukan faktor penilaian, lalu isi poin untuk setiap jabatan di perusahaan kamu." />
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:14, overflow:'hidden', marginBottom:20}}>
+        <div style={{padding:'13px 20px', borderBottom:`1px solid ${C.bds}`, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <span style={{fontSize:14, fontWeight:600, fontFamily:fd, color:C.t1}}>Daftar Faktor</span>
+          <button style={{background:'transparent', border:'none', color:C.ab, fontSize:13, fontFamily:fb, cursor:'pointer'}}>+ Tambah Faktor</button>
+        </div>
+        <table style={{width:'100%', borderCollapse:'collapse'}}>
+          <TH cols={[{l:'Nama Faktor'},{l:'Poin Maks',r:true},{l:''}]} />
+          <tbody>
+            {[['Tanggung Jawab','300'],['Keahlian','250'],['Usaha','200'],['Lingkungan Kerja','150']].map(([f,p],i,arr) => (
+              <tr key={i} style={{borderBottom:i<arr.length-1?`1px solid ${C.bds}`:'none'}}>
+                <td style={{padding:'10px 14px'}}>
+                  <div style={{background:C.bg2, border:`1px solid ${C.bd}`, borderRadius:6, padding:'5px 10px', fontSize:13, color:C.t1, fontFamily:fb, display:'inline-block'}}>{f}</div>
+                </td>
+                <td style={{padding:'10px 14px', textAlign:'right'}}>
+                  <div style={{background:C.bg2, border:`1px solid ${C.bd}`, borderRadius:6, padding:'5px 10px', fontSize:13, fontWeight:500, fontFamily:fm, color:C.t1, display:'inline-block', minWidth:68, textAlign:'right'}}>{p}</div>
+                </td>
+                <td style={{padding:'10px 14px', textAlign:'right', width:40}}>
+                  <button style={{background:'transparent', border:'none', color:C.t3, fontSize:13, cursor:'pointer'}}>✕</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:14, overflow:'hidden', marginBottom:14}}>
+        <div style={{padding:'13px 20px', borderBottom:`1px solid ${C.bds}`, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <span style={{fontSize:14, fontWeight:600, fontFamily:fd, color:C.t1}}>Poin per Jabatan</span>
+          <button style={{background:'transparent', border:'none', color:C.ab, fontSize:13, fontFamily:fb, cursor:'pointer'}}>+ Tambah Jabatan</button>
+        </div>
+        <table style={{width:'100%', borderCollapse:'collapse'}}>
+          <TH cols={[{l:'Jabatan'},{l:'T.Jawab',r:true},{l:'Keahlian',r:true},{l:'Usaha',r:true},{l:'L.Kerja',r:true},{l:'Total',r:true}]} />
+          <tbody>
+            {[
+              ['Staff Admin','80','70','60','40','250'],
+              ['Senior Staff','130','130','100','60','420'],
+              ['Supervisor','190','170','140','80','580'],
+              ['Manager','250','210','170','100','730'],
+              ['Direktur','300','240','190','120','850'],
+            ].map(([j,...vals],i,arr) => (
+              <tr key={i} style={{borderBottom:i<arr.length-1?`1px solid ${C.bds}`:'none'}}>
+                <td style={{padding:'10px 14px', fontSize:14, color:C.t1, fontFamily:fb}}>{j}</td>
+                {vals.slice(0,4).map((v,k) => (
+                  <td key={k} style={{padding:'8px 14px', textAlign:'right'}}>
+                    <div style={{background:C.bg2, border:`1px solid ${C.bd}`, borderRadius:6, padding:'4px 8px', fontSize:12, fontWeight:500, fontFamily:fm, color:C.t1, display:'inline-block', minWidth:56, textAlign:'right'}}>{v}</div>
+                  </td>
+                ))}
+                <td style={{padding:'10px 14px', textAlign:'right', fontSize:14, fontWeight:600, fontFamily:fm, color:C.ab}}>{vals[4]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <IBox title="Validasi Otomatis" v="b">
+        Poin per faktor tidak boleh melebihi poin maksimal faktor tersebut. Total poin dihitung otomatis dan digunakan sebagai input ke perhitungan gaji.
+      </IBox>
+      <div style={{display:'flex', justifyContent:'space-between', marginTop:28}}>
+        <Btn variant="ghost" icon="←">Kembali</Btn>
+        <Btn variant="outline-violet" icon="→">Lanjut ke Input Karyawan</Btn>
+      </div>
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 7 — METODE B: KONFIGURASI TITIK
+───────────────────────────────────────────────────────── */
+const BConfig = () => (
+  <Scrn>
+    <Nav method="B" />
+    <Stepper steps={['Setup Faktor','Isi Poin','Konfigurasi','Hasil']} active={2} variant="b" />
+    <div style={{maxWidth:760, margin:'0 auto', padding:'40px 24px 72px'}}>
+      <STitle title="Titik Referensi & Skala Gaji" sub="Tentukan gaji acuan untuk jabatan terendah dan tertinggi sebagai titik hitung rumus." />
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:14, padding:24, marginBottom:20}}>
+        <div style={{fontSize:12, fontWeight:500, color:C.t3, textTransform:'uppercase', letterSpacing:'0.05em', fontFamily:fb, marginBottom:14}}>Titik Deteksi Otomatis</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:20}}>
+          {[
+            {lbl:'Titik Terendah (P₁)', nm:'Staff Admin', poin:'250 poin', clr:C.sc},
+            {lbl:'Titik Tertinggi (P₂)', nm:'Direktur', poin:'850 poin', clr:C.ab},
+          ].map(({lbl,nm,poin,clr}) => (
+            <div key={lbl} style={{background:C.bg2, border:`1px solid ${C.bd}`, borderRadius:10, padding:16}}>
+              <div style={{fontSize:11, fontWeight:500, color:C.t3, textTransform:'uppercase', letterSpacing:'0.04em', fontFamily:fb, marginBottom:6}}>{lbl}</div>
+              <div style={{fontFamily:fd, fontSize:15, fontWeight:600, color:C.t1, marginBottom:3}}>{nm}</div>
+              <div style={{fontSize:13, fontWeight:500, fontFamily:fm, color:clr}}>{poin}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
+          <Inp label="Gaji Titik Terendah (U₁)" value="Rp 4.500.000" mono helper="Acuan gaji untuk Staff Admin" />
+          <Inp label="Gaji Titik Tertinggi (U₂)" value="Rp 25.000.000" mono helper="Acuan gaji untuk Direktur" />
+        </div>
+        <IBox title="Cara Kerja" v="b">
+          Sistem menghitung gradien garis dari (P₁, U₁) ke (P₂, U₂), lalu menentukan gaji setiap jabatan berdasarkan rumus Y = aX + b, di mana X adalah poin jabatan.
+        </IBox>
+      </div>
+      <div style={{background:C.bg1, border:`1px solid ${C.bd}`, borderRadius:14, padding:24}}>
+        <div style={{fontSize:14, fontWeight:600, fontFamily:fd, color:C.t1, marginBottom:16}}>Skala Min / Mid / Maks (%)</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:16}}>
+          <Inp label="Minimum (%)" value="80" mono helper="Batas bawah — karyawan baru/junior" />
+          <div>
+            <label style={{display:'block', fontSize:12, fontWeight:500, color:C.t2, fontFamily:fb, marginBottom:6}}>Midpoint (%)</label>
+            <div style={{background:C.bg2, border:`1px solid ${C.bd}`, borderRadius:10, padding:'10px 14px', fontSize:14, fontFamily:fm, color:C.t3, textAlign:'right'}}>100 <span style={{fontSize:11}}>(tetap)</span></div>
+            <span style={{fontSize:12, color:C.t3, fontFamily:fb, marginTop:4, display:'block'}}>Gaji standar acuan</span>
+          </div>
+          <Inp label="Maksimum (%)" value="120" mono helper="Batas atas — karyawan senior" />
+        </div>
+      </div>
+      <div style={{display:'flex', justifyContent:'space-between', marginTop:28}}>
+        <Btn variant="ghost" icon="←">Kembali</Btn>
+        <Btn variant="outline-violet" icon="✦">Buat Struktur Gaji</Btn>
+      </div>
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 8 — METODE B: HASIL
+───────────────────────────────────────────────────────── */
+const BResult = () => (
+  <Scrn>
+    <Nav method="B" />
+    <OutHeader title="Hasil Struktur Gaji" method="B" />
+    <div style={{maxWidth:1200, margin:'0 auto', padding:'28px 40px 72px'}}>
+      <SubH mt={0}>Struktur Gaji per Jabatan</SubH>
+      <DTable
+        cols={[{l:'Jabatan'},{l:'Poin',r:true},{l:'Min',r:true},{l:'Mid (Y)',r:true},{l:'Maks',r:true}]}
+        rows={[
+          {cells:[{v:'Staff Admin'},{v:'250',m:true,r:true},{v:'Rp 3.856.000',m:true,r:true},{v:'Rp 4.820.000',m:true,r:true},{v:'Rp 5.784.000',m:true,r:true}]},
+          {cells:[{v:'Senior Staff'},{v:'420',m:true,r:true},{v:'Rp 7.078.000',m:true,r:true},{v:'Rp 8.848.000',m:true,r:true},{v:'Rp 10.617.000',m:true,r:true}]},
+          {cells:[{v:'Supervisor'},{v:'580',m:true,r:true},{v:'Rp 10.141.000',m:true,r:true},{v:'Rp 12.677.000',m:true,r:true},{v:'Rp 15.212.000',m:true,r:true}]},
+          {cells:[{v:'Manager'},{v:'730',m:true,r:true},{v:'Rp 13.004.000',m:true,r:true},{v:'Rp 16.255.000',m:true,r:true},{v:'Rp 19.506.000',m:true,r:true}]},
+          {cells:[{v:'Direktur'},{v:'850',m:true,r:true},{v:'Rp 20.000.000',m:true,r:true},{v:'Rp 25.000.000',m:true,r:true},{v:'Rp 30.000.000',m:true,r:true}]},
+        ]}
+      />
+      <Divider />
+      <SubH mt={0}>Detail per Karyawan</SubH>
+      <DTable
+        cols={[{l:'Nama'},{l:'Jabatan'},{l:'Poin',r:true},{l:'Gaji Lama',r:true},{l:'Min',r:true},{l:'Maks',r:true},{l:'Gap vs Min',r:true},{l:'Gap vs Maks',r:true}]}
+        rows={[
+          {status:'success', cells:[{v:'Andi Pratama'},{v:'Staff Admin'},{v:'250',m:true,r:true},{v:'Rp 4.500.000',m:true,r:true},{v:'Rp 3.856.000',m:true,r:true},{v:'Rp 5.784.000',m:true,r:true},{v:'+Rp 644.000',m:true,r:true},{v:'−Rp 1.284.000',m:true,r:true}]},
+          {status:'danger',  cells:[{v:'Budi Santoso'},{v:'Senior Staff'},{v:'420',m:true,r:true},{v:'Rp 6.200.000',m:true,r:true},{v:'Rp 7.078.000',m:true,r:true},{v:'Rp 10.617.000',m:true,r:true},{v:'−Rp 878.000',m:true,r:true},{v:'−Rp 4.417.000',m:true,r:true}]},
+          {status:'success', cells:[{v:'Citra Lestari'},{v:'Supervisor'},{v:'580',m:true,r:true},{v:'Rp 8.750.000',m:true,r:true},{v:'Rp 10.141.000',m:true,r:true},{v:'Rp 15.212.000',m:true,r:true},{v:'−Rp 1.391.000',m:true,r:true},{v:'−Rp 6.462.000',m:true,r:true}]},
+          {status:'warning', cells:[{v:'Dewi Rahayu'},{v:'Manager'},{v:'730',m:true,r:true},{v:'Rp 22.000.000',m:true,r:true},{v:'Rp 13.004.000',m:true,r:true},{v:'Rp 19.506.000',m:true,r:true},{v:'+Rp 8.996.000',m:true,r:true},{v:'+Rp 2.494.000',m:true,r:true}]},
+        ]}
+      />
+      <Legend />
+    </div>
+  </Scrn>
+);
+
+/* ─────────────────────────────────────────────────────────
+   ASSEMBLY
+───────────────────────────────────────────────────────── */
+const App = () => (
+  <DesignCanvas>
+    <DCSection id="s0" title="Landing Page">
+      <DCArtboard id="landing" label="Landing — Pilih Metode" width={1440} height={878}>
+        <Landing />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="s1" title="Metode A — Berdasarkan Data Gaji Existing" subtitle="Flow 3 langkah: Input Data → Konfigurasi Golongan → Hasil">
+      <DCArtboard id="a1" label="A·1 — Input Data" width={1440} height={766}>
+        <AInput />
+      </DCArtboard>
+      <DCArtboard id="a2" label="A·2 — Konfigurasi Golongan & Rentang" width={1440} height={792}>
+        <AConfig />
+      </DCArtboard>
+      <DCArtboard id="a3" label="A·3 — Hasil & Export" width={1440} height={1000}>
+        <AResult />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="s2" title="Metode B — Berdasarkan Poin Jabatan" subtitle="Flow 4 langkah (via Poin Faktor) atau 3 langkah (sudah punya poin)">
+      <DCArtboard id="b0" label="B·0 — Sudah punya poin jabatan?" width={1440} height={638}>
+        <BBranch />
+      </DCArtboard>
+      <DCArtboard id="b1" label="B·1 — Poin Faktor Builder" width={1440} height={964}>
+        <BPoinFaktor />
+      </DCArtboard>
+      <DCArtboard id="b2" label="B·2 — Konfigurasi Titik & Skala" width={1440} height={852}>
+        <BConfig />
+      </DCArtboard>
+      <DCArtboard id="b3" label="B·3 — Hasil & Export" width={1440} height={1000}>
+        <BResult />
+      </DCArtboard>
+    </DCSection>
+  </DesignCanvas>
+);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
